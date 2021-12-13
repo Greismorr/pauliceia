@@ -281,6 +281,7 @@ export default {
             "close": "Close",
             "box": {
                 "lbTitle": "TITLE",
+                "lbDescription": "DESCRIPTION",
                 "lbAuthors": "AUTHORS",
                 "lbKeywods": "KEYWORDS"
             },

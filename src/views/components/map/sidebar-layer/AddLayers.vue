@@ -12,35 +12,48 @@
         <div class="modal-body">
           <el-input v-model="filterText" :placeholder="$t('map.addLayer.input')"></el-input>
           <br>
-
+          
           <!-- `:set` is just a placeholder to create a local variable -->
           <!-- isLayerActivated - check if this layer is inside the cache -->
           <article v-for="layer in filteredLayers" :key="layer.id"
                   :set="isLayerActivated = layers.includes(layer.id)">
             <div :class="isLayerActivated ? 'box-layer-info activated' : 'box-layer-info disabled'">
               <div class="infos">
-                <p><strong>{{ $t('map.addLayer.box.lbTitle') }}:</strong> {{ layer.name }}</p>
-                <p>
-                  <strong>{{ $t('map.addLayer.box.lbAuthors') }}:</strong>
-                  <span v-for="collaborator in layer.collaborators" :key="collaborator.id">
-                    {{ collaborator.name !== null ? collaborator.name : collaborator.username }};
-                  </span>
-                </p>
-                <p>
-                  <strong>{{ $t('map.addLayer.box.lbKeywods') }}:</strong>
-                  <el-tag v-for="keyword in layer.keywords" :key="keyword.id" style="margin-left: 5px">
-                    {{ keyword.name }}
-                  </el-tag>
-                </p>
-              </div>
+                <md-table md-card>
+                  <md-table-row>
+                    <md-table-head><strong>{{ $t('map.addLayer.box.lbTitle') }}</strong></md-table-head>
+                    <md-table-head><strong>{{ $t('map.addLayer.box.lbDescription') }}</strong></md-table-head>
+                    <md-table-head><strong>{{ $t('map.addLayer.box.lbAuthors') }}</strong></md-table-head>
+                    <md-table-head><strong>{{ $t('map.addLayer.box.lbKeywods') }}</strong></md-table-head>
+                    <!-- Column where the buttons will be -->
+                    <md-table-head></md-table-head>
+                  </md-table-row>
 
-              <div class="btns">
-                <el-button v-if="isLayerActivated" type='danger' @click="disabled(layer)" round>
-                  {{ $t('map.addLayer.btns.disable') }}
-                </el-button>
-                <el-button v-else type='success' @click="active(layer)" round>
-                  {{ $t('map.addLayer.btns.active') }}
-                </el-button>
+                  <md-table-row>
+                    <md-table-cell>{{ layer.name }}</md-table-cell>
+                    <md-table-cell>{{ layer.description }}</md-table-cell>
+                    <md-table-cell>
+                      <span v-for="collaborator in layer.collaborators" :key="collaborator.id">
+                        {{ collaborator.name !== null ? collaborator.name : collaborator.username }};
+                      </span>
+                    </md-table-cell>
+                    <md-table-cell>
+                      <el-tag v-for="keyword in layer.keyword" :key="keyword.id" style="margin-left: 5px">
+                        {{ keyword }}
+                      </el-tag>
+                    </md-table-cell>
+                    <md-table-cell>
+                      <div class="btns">
+                        <el-button v-if="isLayerActivated" type='danger' @click="disabled(layer)" round>
+                          {{ $t('map.addLayer.btns.disable') }}
+                        </el-button>
+                        <el-button v-else type='success' @click="active(layer)" round>
+                          {{ $t('map.addLayer.btns.active') }}
+                        </el-button>
+                      </div>
+                    </md-table-cell>
+                  </md-table-row>
+                </md-table>
               </div>
             </div>
           </article>
@@ -59,7 +72,6 @@
 <script>
 import { mapState } from 'vuex'
 import axios from 'axios'
-
 import Map from '@/middleware/Map'
 import {
   overlayGroup
@@ -118,6 +130,7 @@ export default {
 
       // all available layers
       this.allLayers = result.data.features.map(layer => {
+        console.log(layer)
         return layer.properties
       })
 
